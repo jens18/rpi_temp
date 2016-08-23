@@ -28,6 +28,10 @@ CGO_ENABLED=0 go build -ldflags "-extldflags '-static'" rpi_temp.go
 # go install net: open /usr/local/go/pkg/linux_amd64/net.a: permission denied
 
 # install:
+
+# ensure bin directory exists
+mkdir -p $GOPATH/bin
+# copy executable file
 cp rpi_temp $GOPATH/bin
 
 # generate Docker image
