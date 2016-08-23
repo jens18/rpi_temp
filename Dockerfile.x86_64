@@ -1,0 +1,7 @@
+FROM alpine
+
+# Build number hard-coded so far
+COPY rpi_temp rpi_temp
+
+# EXPOSE 8080  
+CMD ["./rpi_temp"]
