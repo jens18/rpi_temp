@@ -53,6 +53,7 @@ type CpuTemp struct {
 func Index(w http.ResponseWriter, r *http.Request) {
 
 	dat, err := ioutil.ReadFile(cpuTempSysFileName)
+
 	check(err)
 	cpuTempRaw := strings.Trim(string(dat), "\n")
 
