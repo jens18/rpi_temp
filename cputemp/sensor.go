@@ -1,9 +1,8 @@
-//
-
+// Package cputemp provides Arm (Raspbian) and Intel (Ubuntu) CPU temperature
+// measurements.
 package cputemp
 
 import (
-	//	"fmt"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -11,21 +10,28 @@ import (
 	"strings"
 )
 
-// The sys file containing CPU temperature on a Raspberry PI running the Raspian/Hypriot OS (Debian)
-// CPU + GPU are inside the same SOC: BCM 2837 64bit ARMv8 Cortex A53 Quad Core
+// cpuArmTempSysFileName is the 'sys' file name containing CPU temperature
+// on a Raspberry PI running Raspian/Hypriot (Debian).
+// CPU + GPU are inside the same SOC. In the case of an RPI3: BCM 2837
+// 64bit ARMv8 Cortex A53 Quad Core.
 const cpuArmTempSysFileName string = "/sys/class/thermal/thermal_zone0/temp"
 
-// The sys file containing CPU temperature on an Intel PC running the Ubuntu (Debian)
-// (sys file information from 'strace sensors')
+// cpuIntelTempSysFileName is the 'sys' file name containing CPU temperature
+// on an Intel PC running Ubuntu (Debian).
 const cpuIntelTempSysFileName string = "/sys/class/hwmon/hwmon2/temp1_input"
 
-var cpuTempSysFileName string
+// cpuTempSysFileName is initialized with the 'sys' file name for the current
+// machine architecture (arm or x86_64)
+var cpuTempSysFileName stringh
 
+// CpuTemp stores temperature and hostname information. The temperature unit
+// is celsius (Example: 46.3).
 type CpuTemp struct {
 	Temp     string `json:"temp"`
 	HostName string `json:"hostName"`
 }
 
+// Get determines the current CPU temperature and returns a new cputemp instance.
 func (c *CpuTemp) Get() CpuTemp {
 	dat, err := ioutil.ReadFile(cpuTempSysFileName)
 	if err != nil {
@@ -49,7 +55,8 @@ func (c *CpuTemp) Get() CpuTemp {
 	return CpuTemp{strconv.Itoa(temp1) + "." + strconv.Itoa(tempM), hostName}
 }
 
-// Determine the correct 'sys' file at startup time.
+// init determines the correct 'sys' file at startup time based on the
+// output of the 'uname -m' command.
 func init() {
 	unameCmd := exec.Command("uname", "-m")
 	unameOut, err := unameCmd.Output()
