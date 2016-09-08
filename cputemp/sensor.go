@@ -4,6 +4,7 @@ package cputemp
 
 import (
 	"io/ioutil"
+	"log"
 	"os"
 	"os/exec"
 	"strconv"
@@ -74,5 +75,12 @@ func init() {
 		cpuTempSysFileName = cpuArmTempSysFileName
 	default:
 		panic("machine architecture not supported")
+	}
+
+	// test if cpuTempSysFileName exists
+	if _, err := os.Stat(cpuTempSysFileName); os.IsNotExist(err) {
+		log.Printf("sensor.go: No sensors found at %s, exiting.\n",
+			cpuTempSysFileName)
+		os.Exit(1)
 	}
 }
