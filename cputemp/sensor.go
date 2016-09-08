@@ -22,7 +22,7 @@ const cpuIntelTempSysFileName string = "/sys/class/hwmon/hwmon2/temp1_input"
 
 // cpuTempSysFileName is initialized with the 'sys' file name for the current
 // machine architecture (arm or x86_64)
-var cpuTempSysFileName stringh
+var cpuTempSysFileName string
 
 // CpuTemp stores temperature and hostname information. The temperature unit
 // is celsius (Example: 46.3).
