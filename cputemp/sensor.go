@@ -1,5 +1,5 @@
 // Package cputemp provides Arm (Raspbian) and Intel (Ubuntu) CPU temperature
-// measurements.
+// measurements. AMD CPU temperature is not supported.
 package cputemp
 
 import (
@@ -18,7 +18,8 @@ const cpuArmTempSysFileName string = "/sys/class/thermal/thermal_zone0/temp"
 
 // cpuIntelTempSysFileName is the 'sys' file name containing CPU temperature
 // on an Intel PC running Ubuntu (Debian).
-const cpuIntelTempSysFileName string = "/sys/class/hwmon/hwmon2/temp1_input"
+// https://www.kernel.org/doc/Documentation/hwmon/coretemp
+const cpuIntelTempSysFileName string = "/sys/devices/platform/coretemp.0/hwmon/hwmon2/temp1_input"
 
 // cpuTempSysFileName is initialized with the 'sys' file name for the current
 // machine architecture (arm or x86_64)
