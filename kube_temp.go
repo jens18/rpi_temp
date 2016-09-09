@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/jens18/rpi_temp/cputemp"
 	"golang.org/x/build/kubernetes"
-	//"golang.org/x/build/kubernetes/api"
 	"golang.org/x/net/context"
 	"io/ioutil"
 	"log"
@@ -35,6 +34,8 @@ func requestCpuTemp(hostIP string) {
 	json.Unmarshal(buf, &cputemp)
 
 	fmt.Printf("temp=%s, hostname=%s\n", cputemp.Temp, cputemp.HostName)
+
+	response.Body.Close()
 }
 
 func main() {
@@ -55,6 +56,7 @@ func main() {
 			if strings.Compare(string(ip.Type), "LegacyHostIP") == 0 {
 				fmt.Printf("ip=%s, ", ip.Address)
 				requestCpuTemp(ip.Address)
+				//time.Sleep(1000 * time.Millisecond)
 			}
 		}
 	}
