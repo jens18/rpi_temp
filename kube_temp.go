@@ -8,7 +8,6 @@ import (
 	"golang.org/x/net/context"
 	"io/ioutil"
 	"log"
-	"net"
 	"net/http"
 	"strings"
 	"time"
@@ -22,7 +21,6 @@ var netClient = &http.Client{
 
 type NodeTemp struct {
 	IpAddress string          `json:"ipAddress"`
-	HostName  string          `json:"hostName"` // the real hostname
 	NodeTemp  cputemp.CpuTemp `json:"nodeTemp"`
 }
 
@@ -31,7 +29,6 @@ func requestCpuTemp(hostIP string) cputemp.CpuTemp {
 
 	// http client with sensible timeout
 	// (https://medium.com/@nate510/don-t-use-go-s-default-http-client-4804cb19f779#.s0bop6t5g)
-
 	response, err := netClient.Get("http://" + hostIP + ":30001")
 	if err != nil {
 		log.Fatal(err)
@@ -49,7 +46,6 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	var cputemp cputemp.CpuTemp
 
 	var kubetemp []NodeTemp
-	var ipToName = make(map[string]string)
 
 	// https://godoc.org/golang.org/x/build/kubernetes
 	c, err := kubernetes.NewClient(kubeMaster, http.DefaultClient)
@@ -65,29 +61,17 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	for _, n := range nodes {
 		for _, ip := range n.Status.Addresses {
 			if strings.Compare(string(ip.Type), "LegacyHostIP") == 0 {
-				// cache the symbolic name
-				name, ok := ipToName[ip.Address]
-				if ok {
-					name = ipToName[ip.Address]
-				} else {
-					names, _ := net.LookupAddr(ip.Address)
-					ipToName[ip.Address] = names[0]
-					name = names[0]
-				}
+
 				cputemp = requestCpuTemp(ip.Address)
 
-				log.Printf("ip=%s, name=%s, temp=%s, hostname=%s\n",
+				log.Printf("ip=%s, temp=%s, hostname=%s\n",
 					ip.Address,
-					name,
 					cputemp.Temp,
 					cputemp.HostName)
 
 				kubetemp = append(kubetemp,
 					NodeTemp{ip.Address,
-						name,
 						cputemp})
-
-				//				time.Sleep(1000 * time.Millisecond)
 			}
 		}
 	}
