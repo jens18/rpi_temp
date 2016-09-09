@@ -2,7 +2,7 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
+	"github.com/gorilla/mux"
 	"github.com/jens18/rpi_temp/cputemp"
 	"golang.org/x/build/kubernetes"
 	"golang.org/x/net/context"
@@ -20,7 +20,13 @@ var netClient = &http.Client{
 	Timeout: time.Second * 10,
 }
 
-func requestCpuTemp(hostIP string) {
+type NodeTemp struct {
+	IpAddress string          `json:"ipAddress"`
+	HostName  string          `json:"hostName"` // the real hostname
+	NodeTemp  cputemp.CpuTemp `json:"nodeTemp"`
+}
+
+func requestCpuTemp(hostIP string) cputemp.CpuTemp {
 	var cputemp cputemp.CpuTemp
 
 	// http client with sensible timeout
@@ -34,12 +40,16 @@ func requestCpuTemp(hostIP string) {
 	buf, _ := ioutil.ReadAll(response.Body)
 	json.Unmarshal(buf, &cputemp)
 
-	fmt.Printf("temp=%s, hostname=%s\n", cputemp.Temp, cputemp.HostName)
-
 	response.Body.Close()
+	return cputemp
 }
 
-func main() {
+func Index(w http.ResponseWriter, r *http.Request) {
+
+	var cputemp cputemp.CpuTemp
+
+	var kubetemp []NodeTemp
+	var ipToName = make(map[string]string)
 
 	// https://godoc.org/golang.org/x/build/kubernetes
 	c, err := kubernetes.NewClient(kubeMaster, http.DefaultClient)
@@ -55,12 +65,38 @@ func main() {
 	for _, n := range nodes {
 		for _, ip := range n.Status.Addresses {
 			if strings.Compare(string(ip.Type), "LegacyHostIP") == 0 {
-				name, _ := net.LookupAddr(ip.Address)
+				// cache the symbolic name
+				name, ok := ipToName[ip.Address]
+				if ok {
+					name = ipToName[ip.Address]
+				} else {
+					names, _ := net.LookupAddr(ip.Address)
+					ipToName[ip.Address] = names[0]
+					name = names[0]
+				}
+				cputemp = requestCpuTemp(ip.Address)
 
-				fmt.Printf("ip=%s, name=%s, ", ip.Address, name[0])
-				requestCpuTemp(ip.Address)
-				//time.Sleep(1000 * time.Millisecond)
+				log.Printf("ip=%s, name=%s, temp=%s, hostname=%s\n",
+					ip.Address,
+					name,
+					cputemp.Temp,
+					cputemp.HostName)
+
+				kubetemp = append(kubetemp,
+					NodeTemp{ip.Address,
+						name,
+						cputemp})
+
+				//				time.Sleep(1000 * time.Millisecond)
 			}
 		}
 	}
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	json.NewEncoder(w).Encode(kubetemp)
+}
+
+func main() {
+	router := mux.NewRouter().StrictSlash(true)
+	router.HandleFunc("/", Index)
+	log.Fatal(http.ListenAndServe(":9999", router))
 }
