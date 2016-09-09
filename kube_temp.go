@@ -8,6 +8,7 @@ import (
 	"golang.org/x/net/context"
 	"io/ioutil"
 	"log"
+	"net"
 	"net/http"
 	"strings"
 	"time"
@@ -54,7 +55,9 @@ func main() {
 	for _, n := range nodes {
 		for _, ip := range n.Status.Addresses {
 			if strings.Compare(string(ip.Type), "LegacyHostIP") == 0 {
-				fmt.Printf("ip=%s, ", ip.Address)
+				name, _ := net.LookupAddr(ip.Address)
+
+				fmt.Printf("ip=%s, name=%s, ", ip.Address, name[0])
 				requestCpuTemp(ip.Address)
 				//time.Sleep(1000 * time.Millisecond)
 			}
