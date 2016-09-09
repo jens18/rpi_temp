@@ -1,0 +1,20 @@
+apiVersion: extensions/v1beta1
+kind: "DaemonSet"
+metadata:
+  name: rpitemp3
+  labels:
+    daemon: rpi_temp
+spec:
+  template:
+    metadata:
+      labels:
+        daemon: rpi_temp
+    spec:
+      containers:
+        - name: rpitemp
+          image: 10.0.0.20:5000/mesgtone/rpi_temp
+          ports:
+          - containerPort: 9090
+            hostPort: 30001
+
+  
