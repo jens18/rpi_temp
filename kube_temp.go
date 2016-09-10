@@ -41,7 +41,7 @@ func requestCpuTemp(hostIP string) cputemp.CpuTemp {
 	return cputemp
 }
 
-func Index(w http.ResponseWriter, r *http.Request) {
+func KubeTemp(w http.ResponseWriter, r *http.Request) {
 
 	var cputemp cputemp.CpuTemp
 
@@ -81,6 +81,8 @@ func Index(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	router := mux.NewRouter().StrictSlash(true)
-	router.HandleFunc("/", Index)
+	router.HandleFunc("/kubetemp", KubeTemp)
+	// static pages
+	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./static/")))
 	log.Fatal(http.ListenAndServe(":9999", router))
 }
