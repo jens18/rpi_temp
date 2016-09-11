@@ -45,8 +45,9 @@ func Index(w http.ResponseWriter, r *http.Request) {
 
 	c = c.Get()
 
-	log.Printf("cpuTemp = \"%s\", hostName = \"%s\"\n",
+	log.Printf("cpuTemp = \"%s\", cpuArch =\"%s\", hostName = \"%s\"\n",
 		c.Temp,
+		c.CpuArch,
 		c.HostName)
 
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")

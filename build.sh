@@ -19,10 +19,11 @@ PACKAGE_ROOT=github.com/jens18
 # NOTE: GOPATH is expected to to be set to this directory.
 
 # download dependencies:
-go get github.com/gorilla/mux
+# go get github.com/gorilla/mux
 
 # compile:
-CGO_ENABLED=0 go build -ldflags "-extldflags '-static'" rpi_temp.go
+CGO_ENABLED=0 go build -ldflags "-extldflags '-static'" rpi_temp.go 
+CGO_ENABLED=0 go build -ldflags "-extldflags '-static'" kube_temp.go
 
 # 'go install does produce the following error:
 # go install net: open /usr/local/go/pkg/linux_amd64/net.a: permission denied

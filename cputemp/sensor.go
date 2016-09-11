@@ -26,10 +26,14 @@ const cpuIntelTempSysFileName string = "/sys/devices/platform/coretemp.0/hwmon/h
 // machine architecture (arm or x86_64)
 var cpuTempSysFileName string
 
+// cpuArch is initialized with the CPU architecture (as returned by 'uname -m')
+var cpuArch string
+
 // CpuTemp stores temperature and hostname information. The temperature unit
 // is celsius (Example: 46.3).
 type CpuTemp struct {
 	Temp     string `json:"temp"`
+	CpuArch  string `json:"cpuArch"`
 	HostName string `json:"hostName"`
 }
 
@@ -54,7 +58,7 @@ func (c *CpuTemp) Get() CpuTemp {
 	// note: this method does not work in a Docker container
 	hostName, err := os.Hostname()
 
-	return CpuTemp{strconv.Itoa(temp1) + "." + strconv.Itoa(tempM), hostName}
+	return CpuTemp{strconv.Itoa(temp1) + "." + strconv.Itoa(tempM), cpuArch, hostName}
 }
 
 // init determines the correct 'sys' file at startup time based on the
@@ -66,7 +70,9 @@ func init() {
 		panic(err)
 	}
 
-	switch strings.Trim(string(unameOut), "\n") {
+	cpuArch = strings.Trim(string(unameOut), "\n")
+
+	switch cpuArch {
 	case "x86_64":
 		cpuTempSysFileName = cpuIntelTempSysFileName
 	case "armv6l":

@@ -8,6 +8,7 @@ import (
 	"golang.org/x/net/context"
 	"io/ioutil"
 	"log"
+	"net"
 	"net/http"
 	"strings"
 	"time"
@@ -21,6 +22,7 @@ var netClient = &http.Client{
 
 type NodeTemp struct {
 	IpAddress string          `json:"ipAddress"`
+	HostName  string          `json:"hostName"` // the real hostname
 	NodeTemp  cputemp.CpuTemp `json:"nodeTemp"`
 }
 
@@ -46,6 +48,7 @@ func KubeTemp(w http.ResponseWriter, r *http.Request) {
 	var cputemp cputemp.CpuTemp
 
 	var kubetemp []NodeTemp
+	var ipToName = make(map[string]string)
 
 	// https://godoc.org/golang.org/x/build/kubernetes
 	c, err := kubernetes.NewClient(kubeMaster, http.DefaultClient)
@@ -61,16 +64,30 @@ func KubeTemp(w http.ResponseWriter, r *http.Request) {
 	for _, n := range nodes {
 		for _, ip := range n.Status.Addresses {
 			if strings.Compare(string(ip.Type), "LegacyHostIP") == 0 {
+				// cache the symbolic name
+				name, ok := ipToName[ip.Address]
+				if ok {
+					name = ipToName[ip.Address]
+				} else {
+					names, _ := net.LookupAddr(ip.Address)
+					ipToName[ip.Address] = names[0]
+					name = names[0]
+				}
 
 				cputemp = requestCpuTemp(ip.Address)
 
-				log.Printf("ip=%s, temp=%s, hostname=%s\n",
+				log.Printf("%v\n", cputemp)
+
+				log.Printf("ip=%s, name=%s, cpuarch=%s, temp=%s, hostname=%s\n",
 					ip.Address,
+					name,
+					cputemp.CpuArch,
 					cputemp.Temp,
 					cputemp.HostName)
 
 				kubetemp = append(kubetemp,
 					NodeTemp{ip.Address,
+						name,
 						cputemp})
 			}
 		}

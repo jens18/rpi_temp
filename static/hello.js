@@ -1,6 +1,6 @@
 $.ajax({ 
     type: 'GET',
-    url: 'http://192.168.29.20:9999/kubetemp',
+    url: '/kubetemp',
     // force response interpretation as text because we want to call the JSON parser explicitly
     dataType: "text",
     success: function (data) {
@@ -11,7 +11,7 @@ $.ajax({
 	// iterate over indiv items
 	for (var i=0;i<json.length;++i)
 	{
-	    $('#cand').append('<div class="name">'+json[i].ipAddress+': '+json[i].nodeTemp.temp+' &deg;C</>');
+	    $('#cand').append('<div class="name">'+json[i].ipAddress+': '+json[i].hostName+': '+json[i].nodeTemp.cpuArch+': '+json[i].nodeTemp.temp+' &deg;C</>');
 	}
     }
 });
