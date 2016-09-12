@@ -1,0 +1,29 @@
+.bg-dark-grey {
+    background-color: #2E2E2E; 
+    color: #ffffff;
+}
+.bg-blue-grey-node {
+    background-color: #546e7a; 
+    color: #ffffff;
+}
+.bg-grey-node {
+    background-color: #757575; 
+    color: #ffffff;
+}
+.bg-red-temp {
+    background-color: #c62828; 
+    color: #ffffff;
+}
+.bg-green-temp {
+    background-color: #43a047; 
+    color: #ffffff;
+}
+.bg-blue-temp {
+    background-color: #0288d1; 
+    color: #ffffff;
+}
+.bg-orange-temp {
+    background-color: #f57c00; 
+    color: #ffffff;
+}
+
