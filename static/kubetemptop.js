@@ -35,7 +35,7 @@ function getMachineModel(cpuarch) {
     return machineModel;
 }
 
-// sortDescendingCpuTemp sort the json array based on descending CPU temperatures
+// sortDescendingCpuTemp sorts the json array based on descending CPU temperatures.
 function sortDescendingCpuTemp(json) {
     json.sort(function(b, a){
 	var x = parseFloat(a.nodeTemp.temp);
@@ -58,7 +58,7 @@ function rowColorSelector(i) {
     return rowColor;
 }
 
-// tempColorSelect maps a temperature measurement to a background color
+// tempColorSelect maps a temperature measurement to a background color.
 function tempColorSelector(temp) {
     var tempColor = "";
 
