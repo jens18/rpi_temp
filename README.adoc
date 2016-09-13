@@ -1,4 +1,3 @@
-
 == KubeTemp / RPITemp
 
 Monitor Raspberry PI or x86 Kubernetes cluster node cpu temperature.
@@ -53,7 +52,7 @@ Using the following frameworks:
 
 * Bootstrap: responsive, cross platform (Twitter, http://getbootstrap.com/)
 * jQuery: REST request (https://jquery.com/)
-* vue.js: reactive data binding (http://vuejs.org/)(?)
+* vue.js: reactive data binding (http://vuejs.org/)(Note: not current used, JS setInterval() turned out to be sufficient)
 
 url: http://192.168.29.31:9999/kubetemptop.html
 
