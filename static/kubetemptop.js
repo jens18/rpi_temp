@@ -77,7 +77,7 @@ function tempColorSelector(temp) {
     return tempColor;
 }
 
-// Request temperature measurements.
+// Async request temperature measurements.
 $.ajax({ 
     type: 'GET',
     url: '/kubetemp',
