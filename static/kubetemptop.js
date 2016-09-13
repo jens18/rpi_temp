@@ -91,25 +91,28 @@ $.ajax({
 	var json = $.parseJSON(data);
 
 	sortDescendingCpuTemp(json);
+
+	// clear previous content
+	$("#temp").empty();
 	
 	// json array contains json data
 	// iterate over indiv items
 	for (var i=0; i<json.length; ++i)
 	{
-	    $('#temp').append('<div class="row">\n' +
-			      '<div class="col-xs-4 ' + rowColorSelector(i) + '">\n' +
-			      stripDomainName(json[i].hostName) + '<br>' + 
-			         json[i].ipAddress + '\n' +
-			      '</div>\n' +
-			      '<div class="col-xs-3 ' + rowColorSelector(i) + '">\n' +
-			      getMachineModel(json[i].nodeTemp.cpuArch) + '<br>' + 
-			         json[i].nodeTemp.cpuArch + '\n' +
-			      '</div> \n' +
-			      '<div class="col-xs-5 text-center ' +
-			         tempColorSelector(json[i].nodeTemp.temp) + '"> \n' +
-			      '<h4>' + json[i].nodeTemp.temp + ' &deg;C </h4> \n' +
-			      '</div>' + '\n' +
-			      '</div>\n')
+	    // http://www.minimit.com/articles/solutions-tutorials/bootstrap-3-responsive-columns-of-same-height
+	    $('#temp').append('<div class="row">' +
+			      '<div class="row-height">' + 
+			      '<div class="col-xs-4 col-height text-left ' + rowColorSelector(i) + '">' +
+			      '<h4>' + stripDomainName(json[i].hostName) + '</h4>' + json[i].ipAddress + 
+			      '</div>' +
+			      '<div class="col-xs-3  col-height text-left ' + rowColorSelector(i) + '">' +
+			      '<h4>' + getMachineModel(json[i].nodeTemp.cpuArch) + '</h4>' + json[i].nodeTemp.cpuArch + 
+			      '</div>' +
+			      '<div class="col-xs-5 col-height text-center ' + tempColorSelector(json[i].nodeTemp.temp) + '">' +
+			      '<h3>' + json[i].nodeTemp.temp + ' &deg;C </h3>' + 
+			      '</div>' +
+			      '</div>' +
+			      '</div>')
 	}
     }
 });
