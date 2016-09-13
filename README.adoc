@@ -47,7 +47,13 @@ HTML response:
 192.168.29.38: venice.mesgtone.lan.: armv6l: 51.3 °C
 ----
 
-=== Ractive web app:
+=== Single page web app (SPA):
+
+Using the following frameworks: 
+
+* Bootstrap: responsive, cross platform (Twitter, http://getbootstrap.com/)
+* jQuery: REST request (https://jquery.com/)
+* vue.js: reactive data binding (http://vuejs.org/)(?)
 
 url: http://192.168.29.31:9999/kubetemptop.html
 

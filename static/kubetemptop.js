@@ -78,6 +78,7 @@ function tempColorSelector(temp) {
 }
 
 // Request temperature measurements.
+setInterval(function() {
 $.ajax({ 
     type: 'GET',
     url: '/kubetemp',
@@ -112,3 +113,4 @@ $.ajax({
 	}
     }
 });
+}, 5000); //30 seconds
