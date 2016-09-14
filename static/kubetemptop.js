@@ -100,16 +100,20 @@ $.ajax({
 	for (var i=0; i<json.length; ++i)
 	{
 	    // http://www.minimit.com/articles/solutions-tutorials/bootstrap-3-responsive-columns-of-same-height
-	    $('#temp').append('<div class="row">' +
+	    $('#temp').append('<div class="container-fluid">' +
+		              '<div class="row">' +
 			      '<div class="row-height">' + 
 			      '<div class="col-xs-4 col-height text-left ' + rowColorSelector(i) + '">' +
-			      '<h4>' + stripDomainName(json[i].hostName) + '</h4>' + json[i].ipAddress + 
+			      '<span class="node-desc">' + stripDomainName(json[i].hostName) + '</span>' + '<br>' +
+			      '<span class="node-ip-addr">' + json[i].ipAddress + '</span>' +
 			      '</div>' +
 			      '<div class="col-xs-3  col-height text-left ' + rowColorSelector(i) + '">' +
-			      '<h4>' + getMachineModel(json[i].nodeTemp.cpuArch) + '</h4>' + json[i].nodeTemp.cpuArch + 
+			      '<span class="node-desc">' + getMachineModel(json[i].nodeTemp.cpuArch) + '</span>' + '<br>' +
+			      '<span class="node-arch">' + json[i].nodeTemp.cpuArch + '</span>' +
 			      '</div>' +
 			      '<div class="col-xs-5 col-height text-center ' + tempColorSelector(json[i].nodeTemp.temp) + '">' +
-			      '<h3>' + json[i].nodeTemp.temp + ' &deg;C </h3>' + 
+			      '<span class="node-temp">' + json[i].nodeTemp.temp + ' &deg;C </span>' + 
+			      '</div>' +
 			      '</div>' +
 			      '</div>' +
 			      '</div>')
