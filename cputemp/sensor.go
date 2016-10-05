@@ -85,8 +85,8 @@ func init() {
 
 	// test if cpuTempSysFileName exists
 	if _, err := os.Stat(cpuTempSysFileName); os.IsNotExist(err) {
-		log.Printf("sensor.go: No sensors found at %s, exiting.\n",
+		log.Printf("sensor.go: No sensors found at %s.\n",
 			cpuTempSysFileName)
-		os.Exit(1)
+		//os.Exit(1)
 	}
 }

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/gorilla/mux"
 	"github.com/jens18/rpi_temp/cputemp"
+	"github.com/jens18/rpi_temp/nodetemp"
 	"golang.org/x/build/kubernetes"
 	"golang.org/x/net/context"
 	"io/ioutil"
@@ -18,12 +19,6 @@ const kubeMaster string = "http://carmel:8080"
 
 var netClient = &http.Client{
 	Timeout: time.Second * 10,
-}
-
-type NodeTemp struct {
-	IpAddress string          `json:"ipAddress"`
-	HostName  string          `json:"hostName"` // the real hostname
-	NodeTemp  cputemp.CpuTemp `json:"nodeTemp"`
 }
 
 func requestCpuTemp(hostIP string) cputemp.CpuTemp {
@@ -47,7 +42,7 @@ func KubeTemp(w http.ResponseWriter, r *http.Request) {
 
 	var cputemp cputemp.CpuTemp
 
-	var kubetemp []NodeTemp
+	var kubetemp []nodetemp.NodeTemp
 	var ipToName = make(map[string]string)
 
 	// https://godoc.org/golang.org/x/build/kubernetes
@@ -86,7 +81,7 @@ func KubeTemp(w http.ResponseWriter, r *http.Request) {
 					cputemp.HostName)
 
 				kubetemp = append(kubetemp,
-					NodeTemp{ip.Address,
+					nodetemp.NodeTemp{ip.Address,
 						name,
 						cputemp})
 			}
